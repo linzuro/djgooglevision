@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Sigmar+One&display=swap');
+.mdc-theme--primary{
+  background-color:#000000;
+} 
+
+.title{
+  font-family: 'Sigmar One', cursive;
+  margin:2px;
+}
+.mdc-theme--secondary{
+  background-color:#1C1C1E;
+}
+body {
+  font-family: 'Quicksand', sans-serif;
+}
+nav {
+  display: flex;
+  justify-content: space-around;
+}
+a {
+  padding: 0.5rem;
+}
+.active {
+  background-color: tomato;
+  color: white;
+}
+#header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+.track-card-img {
+  margin: 'auto';
+  display: 'block';
+  max-width: '200';
+  max-height: '200';
+}
+.track-card-image {
+  margin: 'auto';
+  display: 'block';
+  max-width: '200';
+  max-height: '200';
+}

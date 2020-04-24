@@ -1,0 +1,18 @@
+ {tracks.map(track=>{
+                return <div className="media" onClick={(ev)=>{
+                    ev.preventDefault()
+                    this.sendMessage({track:track.id,album: track.album.id})
+                }}>
+                            <div className="media-left">
+                            <img width="100px" id="schoolImage" src={track.album.images[0].url} />
+                            </div>
+                            <div className="media-body">
+                                    <h4 className="media-heading">{track.name}</h4>
+                                    <ul className="list-group"> 
+                                        {/* { artists.length ? artists.map(artist=>{
+                                            return <li>{artist.name}</li>
+                                        }) : ''} */}
+                                    </ul>
+                            </div>
+                        </div>
+            })}
