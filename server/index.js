@@ -58,6 +58,25 @@ spotifyApi.play=async(track)=>{
       console.log(er.message)
     }
 }
+
+spotifyApi.addToQueue=async(trackId)=>{
+  const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
+  console.log(URL)
+  const authKey = spotifyApi.getAccessToken()
+  const headers = {headers:{
+      "Accept": 'application/json',
+      "Content-Type": 'application/json',
+      "Authorization": `Bearer ${authKey}`
+     }}  
+
+    try{
+      const data = (await axios.post(URL,null,headers))
+      return data
+    }
+    catch(er){
+      console.log(er.message)
+    }
+}
  
 const generateRandomString = function(length) {
     let text = '';
@@ -234,6 +253,19 @@ app.post('/api/search',async(req,res,next)=>{
   const search = req.body.track
   const data = await spotifyApi.searchTracks(search)
   res.send(data)
+})
+
+app.post('/api/addTrackToAllQueue',(req,res,next)=>{
+  const track = req.body
+  const response = addTrack(track)
+  res.send(response)
+})
+
+app.post('/api/addTrackToQueue',async(req,res,next)=>{
+  const track = req.body.track
+  const status= (await spotifyApi.addToQueue(track)).status
+  console.log(status)
+  res.send(track)
 })
 
 

@@ -11,7 +11,8 @@ import {
   loadTracks,
   loadRecentlyPlayed,
   logIn,
-  playTrack
+  playTrack,
+  addTrackToQueue
 } from './store.js'
 import Home from './Home.js'
 import LogIn from './LogIn.js'
@@ -30,11 +31,19 @@ class App extends React.Component {
       this.props.load()
     }
     window.socket = io();
-    socket.on('message', (message)=> {
+    socket.on('play', (message)=> {
       console.log(message)
       const track = message
       this.props.playTrack(track)
       this.props.loadNowPlaying()
+
+    });
+    socket.on('queue', (message)=> {
+      console.log(message)
+      const track = message
+      console.log('track',track)
+      this.props.addTrackToQueue(track)
+      // this.props.loadNowPlaying()
 
     });
   }
@@ -73,6 +82,10 @@ const mapDispatchToProps = (dispatch)=> {
     loadNowPlaying: ()=>{
       dispatch(loadNowPlaying())
       console.log('now playing loaded')
+  },
+  addTrackToQueue:(track)=>{
+    dispatch(addTrackToQueue(track))
+    console.log('add track to queue success')
   },
   };
 };

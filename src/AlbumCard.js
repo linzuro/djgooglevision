@@ -8,7 +8,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar';
 
 const AlbumCard=({item})=>{
   return (
-          <GridListTile item xs={12} style={{ width: 200, height: 200 }} key={item.album.id}>
+          <GridListTile item xs={12} style={{ width:'calc(100%/5)', height:'same-as-width' }} key={item.album.id}>
             <img src={item.album.images[0].url} />
             <GridListTileBar
               title={item.album.name}

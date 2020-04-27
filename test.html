@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Spotify Web Playback SDK Quick Start Tutorial</title>
+</head>
+<body>
+  <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
+  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2>
+
+  <script src="https://sdk.scdn.co/spotify-player.js"></script>
+  <script>
+    window.onSpotifyWebPlaybackSDKReady = () => {
+      const token = 'BQD9OMjjBQLXfFdjZ9mlyoo-7dFWOvDKi23MFcQo3S9aKRyedG8B9PYDFllz-UUoVkgurbmEbw28rnat50Vr5bBZihGVd9rXazweahjqPWA5wUwGlGLKcarFc0xUNNcjh0t8DJjqZ-X0gCCzl7ty606dhN_86P5wOgcP2B80C0LVhhcIVG08fJ1dDWHOm9mCe3EDUbKQ2f3VaLC7isKkrAAIWJnLK-64TvS-J_HRMaCY19Upoa21zqJT3ZTI5BPAQysK_YJjPIFBGQ';
+      const player = new Spotify.Player({
+        name: 'Web Playback SDK Quick Start Player',
+        getOAuthToken: cb => { cb(token); },
+        spotify_uri: 'spotify:track:7xGfFoTpQ2E7fRF5lN10tr',
+      });
+
+      // Error handling
+      player.addListener('initialization_error', ({ message }) => { console.error(message); });
+      player.addListener('authentication_error', ({ message }) => { console.error(message); });
+      player.addListener('account_error', ({ message }) => { console.error(message); });
+      player.addListener('playback_error', ({ message }) => { console.error(message); });
+
+      // Playback status updates
+      player.addListener('player_state_changed', state => { console.log(state); });
+
+      // Ready
+      player.addListener('ready', ({ device_id }) => {
+        console.log('Ready with Device ID', device_id);
+      });
+
+      // Not Ready
+      player.addListener('not_ready', ({ device_id }) => {
+        console.log('Device ID has gone offline', device_id);
+      });
+
+      // Connect to the player!
+      player.connect();
+
+      player.getCurrentState().then(state => {
+            if (!state) {
+                console.error('User is not playing music through the Web Playback SDK');
+                return;
+            }
+
+            let {
+                current_track,
+                next_tracks: [next_track]
+            } = state.track_window;
+
+            console.log('Currently Playing', current_track);
+            console.log('Playing Next', next_track);
+            });
+
+        
+    }
+  </script>
+</body>
+</html>

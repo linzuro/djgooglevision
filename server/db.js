@@ -32,6 +32,9 @@ const Track = conn.define('track', {
         notEmpty: true
         }
     },
+    action:{
+        type:Sequelize.STRING
+    },
     track:{
         primaryKey:true,
         type:Sequelize.STRING,
@@ -48,7 +51,7 @@ const Track = conn.define('track', {
     hooks: {
       afterCreate: function(message){
         if(socketServer()){
-          socketServer().emit('message', message);
+          socketServer().emit(message.action, message);
           //const sockets = Object.values(socketServer().clients().connected);
         }
       }

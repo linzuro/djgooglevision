@@ -94,7 +94,6 @@ const loadTracks=(id)=>{
 const loadNowPlaying=()=>{
   return async(dispatch)=>{
     const data = (await axios.get(`/api/nowplaying`)).data
-    console.log(data)
     dispatch(_loadNowPlaying(data))
 }
 }
@@ -102,7 +101,6 @@ const loadNowPlaying=()=>{
 const updateNowPlaying=()=>{
   return async(dispatch)=>{
     const data = (await axios.get(`/api/nowplaying`)).data
-    console.log(data)
     dispatch(_updateNowPlaying(data))
 }
 }
@@ -143,6 +141,18 @@ const playTrack = (track)=>{
 const playTrackToAll = (track)=>{
   return async(dispatch)=>{
     const data = (await axios.post(`/api/playToAll`,track)).data
+    // dispatch(_setSearch(""))
+}}
+
+const addTrackToAllQueue = (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/addTrackToAllQueue`,track)).data
+    // dispatch(_setSearch(""))
+}}
+
+const addTrackToQueue = (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/addTrackToQueue`,track)).data
     // dispatch(_setSearch(""))
 }}
 
@@ -234,5 +244,7 @@ export {
  playTrack,
  playTrackToAll,
  searchTrack,
- updateNowPlaying
+ updateNowPlaying,
+ addTrackToAllQueue,
+ addTrackToQueue
 };

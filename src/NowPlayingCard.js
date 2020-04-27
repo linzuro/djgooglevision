@@ -54,13 +54,12 @@ render(){
       <Card style={{width:'calc(100%-20px)',display:'flex',flexWrap:'wrap',padding:20,justifyContent:'center', margin:10}}>
          <div style={{display:'flex',alignItems:'center',flexDirection:'column',justifyItems:'flex-end'}}>
         {nowPlaying.item ? 
-        <CardMedia
+        <CardMedia elevation={3}
         style={{width:400, height:400, margin:10}}
           image={nowPlaying.item.album.images[0].url}
           title="Live from space album cover"
         />
         : '' }
-       
           <div>
           <CardContent style={{display:'flex',alignItems:'center',justifyItems:'space-between',alignContent:'space-between',flexDirection:'column',justifyItems:'center'}}>
             <Typography component="h5" variant="h5">
