@@ -11,16 +11,26 @@ const SET_PLAYLISTS = "SET_PLAYLISTS"
 const SET_ALBUMS = "SET_ALBUMS"
 const SET_RECP = "SET_RECP"
 const SET_TOKEN = "SET_TOKEN"
-// const SET_SEARCH = "SET_SEARCH"
+const SET_PLAYTRACKS="SET_PLAYTRACKS"
 
 const LOAD_TRACKS = "LOAD_TRACKS"
 const UPDT_NOWP = "UPT_NOWP"
 
+const USER_LOGIN = "USER_LOGIN"
+const USER_LOGOUT = "USER_LOGOUT"
+
 //action creators
-const _loadToken = (data) =>{
+const _logIn = (data) =>{
   return {
-    type:SET_TOKEN,
-    token:data
+    type:USER_LOGIN,
+    data:data
+  }
+}
+
+const _logOut = (data) =>{
+  return {
+    type:USER_LOGOUT,
+    data:false
   }
 }
 
@@ -68,6 +78,12 @@ const _updateNowPlaying= (data)=>{
   }
 }
 
+const _loadPlaylistTracks = (data)=>{
+  return {
+    type:SET_PLAYTRACKS, 
+    tracks: data
+  }
+}
 // const _setSearch=(data)=>{
 //   return {
 //     type:SET_SEARCH,
@@ -78,10 +94,18 @@ const _updateNowPlaying= (data)=>{
 
 
 //thunks
+
+const loadPlaylistTracks = (label)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post('/api/makePlaylist',{label})).data
+    console.log(data.tracks)
+    dispatch(_loadPlaylistTracks(data.tracks))
+  }
+}
 const logIn = (token)=>{
   return async(dispatch)=>{
     const data = (await axios.post('/login',{token})).data
-    dispatch(_loadToken(data))
+    dispatch(_logIn(true))
   }
 }
 
@@ -132,9 +156,9 @@ const loadRecentlyPlayed=()=>{
 
 const playTrack = (track)=>{
   return async(dispatch)=>{
-    const data = (await axios.post(`/api/play`,track)).data.body
-    console.log(data)
-    dispatch(_updateNowPlaying(data))
+    const data = (await axios.post(`/api/play`,track))
+    // console.log(data)
+    // dispatch(_updateNowPlaying(data))
 }
 }
 
@@ -167,9 +191,56 @@ const searchTrack = (track)=>{
     }
 }}
 
+const nextTrack = (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/play`,track))
+    // console.log(data)
+    // dispatch(_updateNowPlaying(data))
+}
+}
+
+const previousTrack = (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/play`,track))
+    // console.log(data)
+    // dispatch(_updateNowPlaying(data))
+}
+}
+
+const resumePlayback = (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/play`,track))
+    // console.log(data)
+    // dispatch(_updateNowPlaying(data))
+}
+}
+
+const pausePlayback= (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.post(`/api/play`,track))
+    // console.log(data)
+    // dispatch(_updateNowPlaying(data))
+}
+}
+
+const logOut= (track)=>{
+  return async(dispatch)=>{
+    const data = (await axios.get(`/logout`,track))
+    // console.log(data)
+    dispatch(_logOut(false))
+}
+}
+
 
 
 //reducers
+const logInReducer = (state=false,action)=>{
+  switch(action.type){
+      case USER_LOGOUT: return false
+      case USER_LOGIN: return true
+      default: return state
+  }
+}
 const nowPlayingReducer = (state = {}, action)=> {
   switch(action.type){
     case SET_NOWP: return action.track
@@ -207,25 +278,43 @@ const tracksReducer = (state = [], action)=> {
     default: return state
   };
 };
-// const searchReducer = (state = "", action)=> {
-//   switch(action.type){
-//     case SET_SEARCH: return action.search
-//     default: return state
-//   };
-// };
+const playlistTrackReducer = (state=[],action)=>{
+  switch(action.type){
+      case SET_PLAYTRACKS: return action.tracks
+      default: return state
+  }
+}
 
+const initialState={
+  loggedIn:false, 
+  nowPlaying:{},
+  user:{},
+  playlists:[],
+  albums:[],
+  recentlyPlayed:[],
+  tracks:[]
+}
 
 const reducer = combineReducers({
+  loggedIn:logInReducer,
   nowPlaying: nowPlayingReducer,
   user: userReducer,
   playlists: playlistReducer,
   albums: albumReducer,
   recentlyPlayed:recentlyPlayedReducer,
   tracks:tracksReducer,
+  playlistTracks:playlistTrackReducer,
 });
 
+const rootReducer = (state, action) => {
+  switch(action.type){
+    case USER_LOGOUT: return initialState
+    default: return reducer(state, action)
+  }
+}
 
-const store = createStore(reducer, applyMiddleware(
+
+const store = createStore(rootReducer, applyMiddleware(
   thunks,
   createLogger({collapsed: true}),
 ));
@@ -246,5 +335,11 @@ export {
  searchTrack,
  updateNowPlaying,
  addTrackToAllQueue,
- addTrackToQueue
+ addTrackToQueue,
+ nextTrack,
+ previousTrack,
+ pausePlayback,
+ resumePlayback,
+ logOut,
+ loadPlaylistTracks
 };

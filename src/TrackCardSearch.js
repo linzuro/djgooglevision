@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import {Grid} from '@material-ui/core/';
 import {Paper} from '@material-ui/core/';
 import {Typography} from '@material-ui/core/';
-import {ButtonBase }from '@material-ui/core/';
+import {ButtonBase}from '@material-ui/core/';
 import { withStyles } from "@material-ui/core";
 import {playTrackToAll,loadNowPlaying,updateNowPlaying, addTrackToAllQueue} from './store.js'
 

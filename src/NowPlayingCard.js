@@ -11,37 +11,37 @@ import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import { withStyles } from "@material-ui/core";
-import {playTrackToAll,loadNowPlaying,searchTrack} from './store.js'
+import {playTrackToAll,loadNowPlaying,searchTrack, resumePlayback, pausePlayback, nextTrack, previousTrack} from './store.js'
 
-// const useStyles = makeStyles((theme) => ({
-//   root: {
-//     display: 'flex',
-//     margin:10,
-//     padding:10,
-//     justifyContent:'center',
-//   },
-//   details: {
-//     display: 'flex',
-//     flexDirection: 'column',
-//   },
-//   content: {
-//     flex: '1 0 auto',
-//   },
-//   cover: {
-//     width: 151,
-//     padding:10,
-//   },
-//   controls: {
-//     display: 'flex',
-//     alignItems: 'center',
-//     paddingLeft: theme.spacing(1),
-//     paddingBottom: theme.spacing(1),
-//   },
-//   playIcon: {
-//     height: 38,
-//     width: 38,
-//   },
-// }));
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    margin:10,
+    padding:10,
+    justifyContent:'center',
+  },
+  details: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  content: {
+    flex: '1 0 auto',
+  },
+  cover: {
+    width: 151,
+    padding:10,
+  },
+  controls: {
+    display: 'flex',
+    alignItems: 'center',
+    paddingLeft: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  },
+  playIcon: {
+    height: 38,
+    width: 38,
+  },
+}));
 
 class NowPlayingCard extends Component{
 componentDidMount(){
@@ -49,9 +49,9 @@ componentDidMount(){
 }
 render(){
     const {nowPlaying} = this.props
-
+    const {classes} = this.props
     return (
-      <Card style={{width:'calc(100%-20px)',display:'flex',flexWrap:'wrap',padding:20,justifyContent:'center', margin:10}}>
+      <Card className={classes.root} style={{width:'calc(100%-20px)',display:'flex',flexWrap:'wrap',padding:20,justifyContent:'center', margin:10}}>
          <div style={{display:'flex',alignItems:'center',flexDirection:'column',justifyItems:'flex-end'}}>
         {nowPlaying.item ? 
         <CardMedia elevation={3}
@@ -87,6 +87,7 @@ render(){
   }
 }
 
+
 const mapStateToProps = ({nowPlaying}) => {
     return {nowPlaying}
 }
@@ -96,8 +97,24 @@ const mapDispatchToProps = (dispatch)=> {
     loadNowPlaying: ()=>{
         dispatch(loadNowPlaying())
         console.log('now playing loaded')
+    },
+    resumePlayback: ()=>{
+      dispatch(resumePlayBack())
+      console.log('playback resumed')
+    },
+    pausePlayback: ()=>{
+      dispatch(pausePlayback())
+      console.log('playback paused')
+    },
+    nextTrack: ()=>{
+      dispatch(nextTrack())
+      console.log('skipped to next track')
+    },
+    previousTrack: ()=>{
+      dispatch(previousTrack())
+      console.log('skipped to previous track')
     }
   };
 };
 
-export default (connect(mapStateToProps,mapDispatchToProps)(NowPlayingCard))
+export default withStyles(useStyles)(connect(mapStateToProps,mapDispatchToProps)(NowPlayingCard))

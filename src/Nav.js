@@ -29,11 +29,13 @@ const Nav = ({ user }) => {
                 textColor="primary"
                 onChange={handleChange}
             >
+                
                 <Tab value='/' label='Home' />
-                <Tab value='/nowplaying' label='Now Playing'/>
+                <Tab value='/myplaylists' label="My Playlists"/>
+                {/* <Tab value='/nowplaying' label='Now Playing'/>
                 <Tab value = '/albums' label='Albums' />
                 <Tab value='/playlists' label='Playlists' />
-                <Tab value='/recentlyplayed' label='Recently Played'/>
+                <Tab value='/recentlyplayed' label='Recently Played'/> */}
                 {user.display_name ? <Tab value = '/logout' label='Log Out' /> : <Tab value = '/login/spotify' label='Log In' />}
             </Tabs>
             </Paper>

@@ -47,7 +47,6 @@ import FormControl from '@material-ui/core/FormControl';
 // }
 
 const Search=(props)=>{
-    console.log(props)
     const {searchTrack} = props
     const [search, setSearch] = useState("");
     return (

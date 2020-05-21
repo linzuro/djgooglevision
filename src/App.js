@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { HashRouter, Route, Redirect, useHistory,Switch} from 'react-router-dom';
+import { HashRouter, Router, Route, Redirect,Switch,Link,BrowserRouter} from 'react-router-dom';
 import Nav from './Nav.js'
 import Header from './Header.js'
 import {
@@ -16,10 +16,13 @@ import {
 } from './store.js'
 import Home from './Home.js'
 import LogIn from './LogIn.js'
+import LogInButton from './LogInButton.js'
 import Recent from './Recent.js'
 import Playlists from './Playlists.js'
 import Albums from './Albums.js'
 import NowPlaying from './NowPlaying.js'
+import LogOut from './LogOut.js'
+import MyPlaylists from './MyPlaylists.js'
 
 
 
@@ -35,8 +38,9 @@ class App extends React.Component {
       console.log(message)
       const track = message
       this.props.playTrack(track)
-      this.props.loadNowPlaying()
-
+      setTimeout(()=>{
+        this.props.loadNowPlaying()
+      },1000)
     });
     socket.on('queue', (message)=> {
       console.log(message)
@@ -48,19 +52,35 @@ class App extends React.Component {
     });
   }
   render() {
-    return (
-      <HashRouter>
-       <Route component={Header} />
-        <Route component={Nav} />
-        <Route exact path='/' component={Home} />
-        <Route exact path='/token/:id' component={LogIn} />
-        <Route exact path='/test' component={LogIn} />
-        <Route exact path='/nowplaying' component={NowPlaying} />
-        <Route exact path='/albums' component={Albums} />
-        <Route exact path='/playlists' component={Playlists} />
-        <Route exact path='/recentlyplayed' component={Recent} />
-      </HashRouter>
-    );
+    const {user,loggedIn} = this.props
+    console.log(loggedIn,'logged in')
+    console.log(this.props)
+
+      if(user.id){
+        return (
+       <HashRouter>
+        <Route component={Header} />
+         <Route component={Nav} />
+         <Route exact path='/' component={Home} />
+         <Route exact path='/token/:id' component={LogIn} />
+         <Route exact path='/test' component={LogIn} />
+         <Route exact path='/nowplaying' component={NowPlaying} />
+         <Route exact path='/albums' component={Albums} />
+         <Route exact path='/playlists' component={Playlists} />
+         <Route exact path='/recentlyplayed' component={Recent} />
+         <Route exact path='/logout' component={LogOut} />
+         <Route exact path='/myplaylists' component={MyPlaylists} />
+         </HashRouter>
+        )
+       }else{
+         return (
+          <HashRouter>
+            <Route component={Header} />
+            <Route component={LogInButton} />
+            <Route exact path='/token/:id' component={LogIn} />
+          </HashRouter>
+          )
+       }
   }
 }
 
@@ -90,5 +110,9 @@ const mapDispatchToProps = (dispatch)=> {
   };
 };
 
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = ({user}) => {
+  return {user}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
 

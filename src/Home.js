@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
+import FilePicker from './FilePicker'
 
 const Home =({user})=>{
-return <ul>{Object.keys(user).map(item=>{
-    return <li> {`${item}: ${user[item]}`}</li>
-})}</ul>
+return <FilePicker />
 }
 
 

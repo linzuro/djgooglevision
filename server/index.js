@@ -1,3 +1,4 @@
+const {spotifyApi} =require('./spotifyApi.js')
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node')
 const path = require('path')
@@ -14,68 +15,117 @@ const { setUp } = require('./socketHelper');
 const axios = require('axios')
 const {client_id,client_secret,redirect_uri} =require('./client.js')
 
-const port = process.env.PORT || 8888;
 
-// db.sync()
-//     .then(result=>{
-//         User.findOne({ where: { name:'lzurovch' } })
-//             .then(result=>{
-//                 if(result.dataValues.authKey){
-//                     console.log('success')
-//                     spotifyApi.setAccessToken(result.dataValues.authKey);
-//                     spotifyApi.setRefreshToken(result.dataValues.refreshKey);
-//                 }else{
-//                     //call login
-//                     console.log('blank')
-//                 }
-//         })
-//     })
-//     .catch(er=>console.log(er))
+const port = process.env.PORT || 8888;
 
 // const client_id= '5f43f2012f244638af8b2ab1eca35a88'
 // const client_secret= '8b5f589a0cad44c7bc6defe54e54ed46'
 // const redirect_uri= 'http://localhost:8888/callback'
 
-const spotifyApi = new SpotifyWebApi({
-    clientId: client_id,
-    clientSecret: client_secret,
-    redirectUri: redirect_uri
-});
+// const spotifyApi = new SpotifyWebApi({
+//     clientId: client_id,
+//     clientSecret: client_secret,
+//     redirectUri: redirect_uri
+// });
 
-spotifyApi.play=async(track)=>{
-  const URL = 'https://api.spotify.com/v1/me/player/play'
-  const authKey = spotifyApi.getAccessToken()
-  const headers = {headers:{
-      "Accept": 'application/json',
-      "Content-Type": 'application/json',
-      "Authorization": `Bearer ${authKey}`
-  }}
-    try{
-      const data = (await axios.put(URL,track,headers))
-      return data
+// spotifyApi.play=async(track)=>{
+//   const URL = 'https://api.spotify.com/v1/me/player/play'
+//   const authKey = spotifyApi.getAccessToken()
+//   const headers = {headers:{
+//       "Accept": 'application/json',
+//       "Content-Type": 'application/json',
+//       "Authorization": `Bearer ${authKey}`
+//   }}
+//     try{
+//       const data = (await axios.put(URL,track,headers))
+//       return data
+//     }
+//     catch(er){
+//       console.log(er.message)
+//     }
+// }
+
+// spotifyApi.addToQueue=async(trackId)=>{
+//   const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
+//   console.log(URL)
+//   const authKey = spotifyApi.getAccessToken()
+//   const headers = {headers:{
+//       "Accept": 'application/json',
+//       "Content-Type": 'application/json',
+//       "Authorization": `Bearer ${authKey}`
+//      }}  
+
+//     try{
+//       const data = (await axios.post(URL,null,headers))
+//       return data
+//     }
+//     catch(er){
+//       console.log(er.message)
+//     }
+// }
+const getCriteria=(label)=>{
+switch(label){
+  case "party": 
+    return {
+      limit:25,
+      min_danceability:0.5,
+      max_danceability:1,
+      min_energy:0.5,
+      max_engery:1,
+      mix_valence:0.5,
+      max_valence:1,
+      min_instrumentalness:0.5,
+      max_instrumentalness:1,
+      min_tempo:0.5,
+      max_temp0:1
     }
-    catch(er){
-      console.log(er.message)
+  case "activity": 
+    return {
+      limit:25,
+      min_danceability:0.5,
+      max_danceability:1,
+      min_energy:0.5,
+      max_engery:1,
+      mix_valence:0,
+      max_valence:1,
+      min_instrumentalness:0,
+      max_instrumentalness:1,
+      min_tempo:0,
+      max_temp0:1
+    }
+  case "relax": 
+    return  {
+      limit:25,
+      min_danceability:0,
+      max_danceability:0.5,
+      min_energy:0,
+      max_engery:1,
+      mix_valence:0,
+      max_valence:1,
+      min_instrumentalness:0,
+      max_instrumentalness:1,
+      min_tempo:0,
+      max_temp0:1
+    }
+  case "work": 
+    return {
+      limit:25,
+      min_danceability:0,
+      max_danceability:1,
+      min_energy:0,
+      max_engery:1,
+      mix_valence:0,
+      max_valence:1,
+      min_instrumentalness:0,
+      max_instrumentalness:1,
+      min_tempo:0,
+      max_temp0:1
+    }
+  default: 
+    return  {
+      limit:25,
     }
 }
-
-spotifyApi.addToQueue=async(trackId)=>{
-  const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
-  console.log(URL)
-  const authKey = spotifyApi.getAccessToken()
-  const headers = {headers:{
-      "Accept": 'application/json',
-      "Content-Type": 'application/json',
-      "Authorization": `Bearer ${authKey}`
-     }}  
-
-    try{
-      const data = (await axios.post(URL,null,headers))
-      return data
-    }
-    catch(er){
-      console.log(er.message)
-    }
 }
  
 const generateRandomString = function(length) {
@@ -116,12 +166,18 @@ app.get('/login/spotify',(req,res,next)=>{
         'user-read-recently-played',
         'user-library-read',
         'streaming',
-        'app-remote-control'
+        'app-remote-control',
+        'user-top-read',
     ];
 
     const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
 
     res.redirect(authorizeURL)
+})
+
+app.get('/logout',(req,res,next)=>{
+  spotifyApi.resetAccessToken()
+  spotifyApi.resetRefreshToken()
 })
 
 app.get('/callback',(req,res,next)=>{
@@ -245,8 +301,8 @@ app.post('/api/play',async(req,res,next)=>{
     //if 204 then success
     //if 403 then non premium function
     //console.log(status) 
-    const ret = await spotifyApi.getMyCurrentPlaybackState({})
-    res.send(ret)
+    //const ret =await spotifyApi.getMyCurrentPlaybackState({})
+    res.sendStatus(status)
 })
 
 app.post('/api/search',async(req,res,next)=>{
@@ -266,6 +322,44 @@ app.post('/api/addTrackToQueue',async(req,res,next)=>{
   const status= (await spotifyApi.addToQueue(track)).status
   console.log(status)
   res.send(track)
+})
+
+app.post('/api/makePlaylist',async(req,res,next)=>{
+  const {label} = req.body
+  try{
+    const tracks = (await spotifyApi.getMyTopTracks({limit:5}))
+                  .body.items.map(track=>{
+                    return track.id
+                  })
+    const criteria = getCriteria(label)
+    const recommended = await spotifyApi.getRecommendations({...criteria,seed_tracks:tracks})
+    res.send(recommended.body)
+    }catch(er){
+      console.log(er)
+    }
+})
+app.get('/auth/service/',(req,res,next)=>{
+  const { GoogleToken } = require('gtoken');
+  if(process.env.key && process.env.email){
+    const gtoken = new GoogleToken({
+      email: process.env.email,
+      scope: ['https://scope1', 'https://scope2'], // or space-delimited string of scopes
+      key: process.env.key
+    });
+  }else{
+    const gtoken = new GoogleToken({
+      keyFile: './googleKey.json',
+      scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
+    });
+  }
+  gtoken.getToken((err, tokens) => {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    res.send(tokens.access_token)
+  })
+  
 })
 
 
