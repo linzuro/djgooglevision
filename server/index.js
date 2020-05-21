@@ -342,7 +342,7 @@ app.get('/auth/service/',(req,res,next)=>{
   if(process.env.key && process.env.email){
     const gtoken = new GoogleToken({
       email: process.env.email,
-      scope: ['https://scope1', 'https://scope2'], // or space-delimited string of scopes
+      scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
       key: process.env.key
     });
     gtoken.getToken((err, tokens) => {
