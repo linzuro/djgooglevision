@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const conn = new Sequelize(process.env.DATABASE_URL || "postgres://localhost/spotify_auth");
+const conn = new Sequelize(process.env.DATABASE_URL || "postgres://localhost/hangthedj");
 const jwt = require('jwt-simple')
 const { socketServer } = require('./socketHelper');
 
