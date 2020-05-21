@@ -69,7 +69,7 @@ class App extends React.Component {
          <Route exact path='/playlists' component={Playlists} />
          <Route exact path='/recentlyplayed' component={Recent} />
          <Route exact path='/logout' component={LogOut} />
-         <Route exact path='/myplaylists' component={MyPlaylists} />
+         <Route exact path='/makeplaylists' component={MyPlaylists} />
          </HashRouter>
         )
        }else{

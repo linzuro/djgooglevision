@@ -1,4 +1,4 @@
-const {spotifyApi} =require('./spotifyApi.js')
+
 const express = require('express');
 const SpotifyWebApi = require('spotify-web-api-node')
 const path = require('path')
@@ -13,56 +13,54 @@ const jwt = require('jwt-simple')
 const {addUser,getUser, addTrack} = db
 const { setUp } = require('./socketHelper');
 const axios = require('axios')
-const {client_id,client_secret,redirect_uri} =require('./client.js')
-
+const client_id = process.env.client_id || require('./client.js').client_id
+const client_secret = process.env.client_secret || require('./client.js').client_secret
+const redirect_uri = process.env.redirect_uri || require('./client.js').redirect_uri
 
 const port = process.env.PORT || 8888;
 
-// const client_id= '5f43f2012f244638af8b2ab1eca35a88'
-// const client_secret= '8b5f589a0cad44c7bc6defe54e54ed46'
-// const redirect_uri= 'http://localhost:8888/callback'
+const spotifyApi = new SpotifyWebApi({
+  clientId: client_id,
+  clientSecret: client_secret,
+  redirectUri: redirect_uri
+});
 
-// const spotifyApi = new SpotifyWebApi({
-//     clientId: client_id,
-//     clientSecret: client_secret,
-//     redirectUri: redirect_uri
-// });
+spotifyApi.play=async(track)=>{
+const URL = 'https://api.spotify.com/v1/me/player/play'
+const authKey = spotifyApi.getAccessToken()
+const headers = {headers:{
+    "Accept": 'application/json',
+    "Content-Type": 'application/json',
+    "Authorization": `Bearer ${authKey}`
+}}
+  try{
+    const data = (await axios.put(URL,track,headers))
+    return data
+  }
+  catch(er){
+    console.log(er.message)
+  }
+}
 
-// spotifyApi.play=async(track)=>{
-//   const URL = 'https://api.spotify.com/v1/me/player/play'
-//   const authKey = spotifyApi.getAccessToken()
-//   const headers = {headers:{
-//       "Accept": 'application/json',
-//       "Content-Type": 'application/json',
-//       "Authorization": `Bearer ${authKey}`
-//   }}
-//     try{
-//       const data = (await axios.put(URL,track,headers))
-//       return data
-//     }
-//     catch(er){
-//       console.log(er.message)
-//     }
-// }
+spotifyApi.addToQueue=async(trackId)=>{
+const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
+console.log(URL)
+const authKey = spotifyApi.getAccessToken()
+const headers = {headers:{
+    "Accept": 'application/json',
+    "Content-Type": 'application/json',
+    "Authorization": `Bearer ${authKey}`
+   }}  
 
-// spotifyApi.addToQueue=async(trackId)=>{
-//   const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
-//   console.log(URL)
-//   const authKey = spotifyApi.getAccessToken()
-//   const headers = {headers:{
-//       "Accept": 'application/json',
-//       "Content-Type": 'application/json',
-//       "Authorization": `Bearer ${authKey}`
-//      }}  
+  try{
+    const data = (await axios.post(URL,null,headers))
+    return data
+  }
+  catch(er){
+    console.log(er.message)
+  }
+}
 
-//     try{
-//       const data = (await axios.post(URL,null,headers))
-//       return data
-//     }
-//     catch(er){
-//       console.log(er.message)
-//     }
-// }
 const getCriteria=(label)=>{
 switch(label){
   case "party": 
@@ -153,6 +151,7 @@ app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
 
 app.get('/login/spotify',(req,res,next)=>{
+  console.log('hello')
     const state = generateRandomString(16);
 
     res.cookie(stateKey, state);
@@ -346,19 +345,26 @@ app.get('/auth/service/',(req,res,next)=>{
       scope: ['https://scope1', 'https://scope2'], // or space-delimited string of scopes
       key: process.env.key
     });
+    gtoken.getToken((err, tokens) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      res.send(tokens.access_token)
+    })
   }else{
     const gtoken = new GoogleToken({
       keyFile: './googleKey.json',
       scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
     });
+    gtoken.getToken((err, tokens) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      res.send(tokens.access_token)
+    })
   }
-  gtoken.getToken((err, tokens) => {
-    if (err) {
-      console.log(err);
-      return;
-    }
-    res.send(tokens.access_token)
-  })
   
 })
 

@@ -31,7 +31,7 @@ const Nav = ({ user }) => {
             >
                 
                 <Tab value='/' label='Home' />
-                <Tab value='/myplaylists' label="My Playlists"/>
+                <Tab value='/makeplaylists' label="Make A Playlist"/>
                 {/* <Tab value='/nowplaying' label='Now Playing'/>
                 <Tab value = '/albums' label='Albums' />
                 <Tab value='/playlists' label='Playlists' />

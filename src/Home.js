@@ -1,9 +1,13 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import FilePicker from './FilePicker'
+import {Typography} from '@material-ui/core'
 
 const Home =({user})=>{
-return <FilePicker />
+return <div style={{margin:20, display:'flex', justifyContent:'center'}}><Typography>
+    Welcome {user.display_name}
+</Typography>
+</div>
 }
 
 
