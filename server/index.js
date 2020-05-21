@@ -339,7 +339,9 @@ app.post('/api/makePlaylist',async(req,res,next)=>{
 })
 app.get('/auth/service/',(req,res,next)=>{
   const { GoogleToken } = require('gtoken');
-  if(process.env.key && process.env.email){
+  console.log(process.env.key)
+  console.log(process.env.email)
+  // if(process.env.key && process.env.email){
     const gtoken = new GoogleToken({
       email: process.env.email,
       scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
@@ -352,19 +354,19 @@ app.get('/auth/service/',(req,res,next)=>{
       }
       res.send(tokens.access_token)
     })
-  }else{
-    const gtoken = new GoogleToken({
-      keyFile: './googleKey.json',
-      scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
-    });
-    gtoken.getToken((err, tokens) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-      res.send(tokens.access_token)
-    })
-  }
+  // }else{
+  //   const gtoken = new GoogleToken({
+  //     keyFile: './googleKey.json',
+  //     scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
+  //   });
+  //   gtoken.getToken((err, tokens) => {
+  //     if (err) {
+  //       console.log(err);
+  //       return;
+  //     }
+  //     res.send(tokens.access_token)
+  //   })
+  // }
   
 })
 
