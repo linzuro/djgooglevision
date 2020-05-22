@@ -12,6 +12,7 @@ const SET_ALBUMS = "SET_ALBUMS"
 const SET_RECP = "SET_RECP"
 const SET_TOKEN = "SET_TOKEN"
 const SET_PLAYTRACKS="SET_PLAYTRACKS"
+const RESET_PLAYTRACKS = "RESET_PLAYTRACKS"
 
 const LOAD_TRACKS = "LOAD_TRACKS"
 const UPDT_NOWP = "UPT_NOWP"
@@ -82,6 +83,13 @@ const _loadPlaylistTracks = (data)=>{
   return {
     type:SET_PLAYTRACKS, 
     tracks: data
+  }
+}
+
+const _resetPlaylistTracks = ()=>{
+  return {
+    type:RESET_PLAYTRACKS, 
+    tracks: []
   }
 }
 // const _setSearch=(data)=>{
@@ -243,6 +251,15 @@ const savePlaylist= ({tracks,dataURL,name,userId})=>{
     }
 }
 }
+const resetPlaylistTracks= ()=>{
+  return async(dispatch)=>{
+    try{
+      dispatch(_resetPlaylistTracks())
+    }catch(er){
+      console.log(er)
+    }
+}
+}
 
 
 
@@ -294,6 +311,7 @@ const tracksReducer = (state = [], action)=> {
 const playlistTrackReducer = (state=[],action)=>{
   switch(action.type){
       case SET_PLAYTRACKS: return action.tracks
+      case RESET_PLAYTRACKS: return action.tracks
       default: return state
   }
 }
@@ -355,5 +373,6 @@ export {
  resumePlayback,
  logOut,
  loadPlaylistTracks,
- savePlaylist
+ savePlaylist,
+ resetPlaylistTracks
 };

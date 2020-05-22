@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
 import { HashRouter, Route,Link, useHistory } from 'react-router-dom';
-import {loadPlaylistTracks, savePlaylist} from './store.js'
+import {loadPlaylistTracks, savePlaylist,resetPlaylistTracks} from './store.js'
 import {Grid, IconButton, Card, CardContent} from '@material-ui/core/';
 import {Paper, Button, Input} from '@material-ui/core/';
 import {Typography} from '@material-ui/core/';
@@ -70,6 +70,7 @@ class MyPlaylists extends Component {
         name:'My Playlist',
         editMode:false,
       })
+      this.props.reset()
     }
     submit(){
       const {dataURL,name} = this.state
@@ -155,7 +156,23 @@ class MyPlaylists extends Component {
       </Snackbar>
       <form>
         {!image ? 
-        <Input style={{width:loading ? 0 : '100%'}} accept="image/*" ref={ref=>this.el=ref} type='file'/> 
+        <div style={{display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}>
+          <Button
+            variant="contained"
+            component="label"
+            style={{margin:10}}
+          >
+            Select Image
+            <input
+            style={{width:loading ? 0 : '100%'}} accept="image/*" ref={ref=>this.el=ref}
+              type="file"
+              style={{ display: "none" }}
+            />
+          </Button>
+        <Typography variant="body2">
+          Only JPEG images less than 265KB can be used as playlist covers
+        </Typography>
+        </div>
         :
         ''}
       </form>
@@ -264,6 +281,10 @@ const mapDispatchToProps = (dispatch)=> {
       savePlaylist: (playlistTracks)=> {
         dispatch(savePlaylist(playlistTracks))
         console.log('save playlist');
+      },
+      reset: ()=> {
+        dispatch(resetPlaylistTracks())
+        console.log('reset');
       }
     };
   };

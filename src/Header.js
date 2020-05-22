@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const Header=({user,location})=>{
     const classes = useStyles()
     return  <Toolbar component="nav" variant="dense" className={classes.toolbarTitle}>
-                <h1 className='title'>hang the dj</h1>
+                <h1 className='title'>dj google vision</h1>
             </Toolbar>
 }
 
