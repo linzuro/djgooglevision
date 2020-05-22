@@ -231,6 +231,19 @@ const logOut= (track)=>{
 }
 }
 
+const savePlaylist= ({tracks,dataURL,name,userId})=>{
+  return async(dispatch)=>{
+    try{
+      const playlist = (await axios.post(`/api/createPlaylist`,{userId,name})).data
+      const data = (await axios.post(`/api/addPlaylistTracks`,{tracks,playlistId:playlist.id})).data
+      const image = (await axios.post(`/api/updatePlaylistImage`,{playlistId:playlist.id,dataURL})).data
+      dispatch(_loadPlaylistTracks([]))
+    }catch(er){
+      console.log(er)
+    }
+}
+}
+
 
 
 //reducers
@@ -341,5 +354,6 @@ export {
  pausePlayback,
  resumePlayback,
  logOut,
- loadPlaylistTracks
+ loadPlaylistTracks,
+ savePlaylist
 };

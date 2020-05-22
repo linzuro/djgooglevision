@@ -53,8 +53,6 @@ class App extends React.Component {
   }
   render() {
     const {user,loggedIn} = this.props
-    console.log(loggedIn,'logged in')
-    console.log(this.props)
 
       if(user.id){
         return (

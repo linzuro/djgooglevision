@@ -27,6 +27,8 @@ class FilePicker extends Component{
       reader.readAsDataURL(file)
       reader.addEventListener('load',()=>{
         const result = reader.result
+        const edit = reader.result.slice(result.indexOf(','))
+        console.log(edit)
         const dataURL = result.replace("data:image/jpeg;base64,", "")
         this.setState({dataURL})
       })

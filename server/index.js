@@ -13,6 +13,7 @@ const jwt = require('jwt-simple')
 const {addUser,getUser, addTrack} = db
 const { setUp } = require('./socketHelper');
 const axios = require('axios')
+const LZString = require('lz-string')
 const client_id = process.env.client_id || require('./client.js').client_id
 const client_secret = process.env.client_secret || require('./client.js').client_secret
 const redirect_uri = process.env.redirect_uri || require('./client.js').redirect_uri
@@ -151,7 +152,6 @@ app.use(express.static(__dirname + '/public'))
     .use(cookieParser());
 
 app.get('/login/spotify',(req,res,next)=>{
-  console.log('hello')
     const state = generateRandomString(16);
 
     res.cookie(stateKey, state);
@@ -167,6 +167,9 @@ app.get('/login/spotify',(req,res,next)=>{
         'streaming',
         'app-remote-control',
         'user-top-read',
+        'playlist-modify-public',
+        'playlist-modify-private',
+        'ugc-image-upload'
     ];
 
     const authorizeURL = spotifyApi.createAuthorizeURL(scopes, state);
@@ -335,6 +338,42 @@ app.post('/api/makePlaylist',async(req,res,next)=>{
     res.send(recommended.body)
     }catch(er){
       console.log(er)
+    }
+})
+app.post('/api/createPlaylist',async(req,res,next)=>{
+  const {name,userId} = req.body
+  try{
+      const data = await spotifyApi.createPlaylist(userId,name,{public:false})
+      res.send(data.body)
+    }catch(er){
+      console.log(er)
+    }
+})
+app.post('/api/addPlaylistTracks',async(req,res,next)=>{
+  const {tracks,playlistId} = req.body
+  try{
+      const data = await spotifyApi.addTracksToPlaylist(playlistId,tracks)
+      res.send(data.body)
+    }catch(er){
+      console.log('add tracks', er)
+    }
+})
+app.post('/api/updatePlaylistImage',async(req,res,next)=>{
+  const {playlistId,dataURL} = req.body
+  // const decompressed = LZString.decompressFromEncodedURIComponent(dataURL)
+  // const compressed = await LZString.compressToBase64(dataURL)
+  const URL = `https://api.spotify.com/v1/playlists/${playlistId}/images`
+  const authKey = spotifyApi.getAccessToken()
+  const headers = {headers:{
+      "Content-Type": 'image/jpeg',
+      "Authorization": `Bearer ${authKey}`
+  }}
+    try{
+      const data = (await axios.put(URL,dataURL,headers))
+      res.sendStatus(data.status)
+    }
+    catch(er){
+      console.log('update image',er)
     }
 })
 app.get('/auth/service/',(req,res,next)=>{
