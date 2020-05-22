@@ -6,10 +6,10 @@ import {logOut} from './store.js'
 const LogOut =({history,logOut,user,loggedIn})=>{
     // const token = props.match.params.id
     // window.localStorage.removeItem('token')
-   
+   console.log(logOut)
     logOut()
     console.log(user,loggedIn)
-    history.push('/')
+    // history.push('/')
     return null
 }
 

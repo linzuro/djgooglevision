@@ -2,6 +2,7 @@ import axios from 'axios';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunks from 'redux-thunk';
 import {createLogger} from 'redux-logger';
+import {useHistory} from 'react-router-dom'
 
 //constants
 const SET_TRACKS = "SET_TRACKS"
@@ -231,11 +232,13 @@ const pausePlayback= (track)=>{
 }
 }
 
-const logOut= (track)=>{
+const logOut= ()=>{
   return async(dispatch)=>{
-    const data = (await axios.get(`/logout`,track))
+    const data = (await axios.get(`/logout`))
     // console.log(data)
-    dispatch(_logOut(false))
+    const history =useHistory()
+    dispatch(_loadUser({}))
+    history.push('/')
 }
 }
 

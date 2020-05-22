@@ -160,6 +160,7 @@ class MyPlaylists extends Component {
           <Button
             variant="contained"
             component="label"
+            color='primary'
             style={{margin:10}}
           >
             Select Image
