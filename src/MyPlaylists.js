@@ -44,20 +44,19 @@ class MyPlaylists extends Component {
     }
     
     componentDidMount(){
-      
-      this.el.addEventListener('change', (ev)=>{
-        this.setState({loading:true})
-        const reader = new FileReader()
-        const file = ev.target.files[0]
-        reader.readAsDataURL(file)
-        reader.addEventListener('load',()=>{
-          const result = reader.result
-          this.handleChange(result)
+        this.el.addEventListener('change',(ev)=>{
+          this.setState({loading:true})
+          const reader = new FileReader()
+          const file = ev.target.files[0]
+          reader.readAsDataURL(file)
+          reader.addEventListener('load',()=>{
+            const result = reader.result
+            this.handleChange(result)
+          })
         })
-      })
       this.setState({loading:false})
     }
-    componentDidUpdate(prevProps){
+    componentDidUpdate(prevProps,prevState){
       if(prevProps!==this.props){
         this.setState({loading:false})
       }
@@ -71,6 +70,7 @@ class MyPlaylists extends Component {
         editMode:false,
       })
       this.props.reset()
+      this.el.value=null
     }
     submit(){
       const {dataURL,name} = this.state
@@ -79,7 +79,6 @@ class MyPlaylists extends Component {
       const tracks = playlistTracks.map(track=>{
         return `spotify:track:${track.id}`
       })
-      // const compress = LZString.compressToEncodedURIComponent(dataURL)
       savePlaylist({
         tracks,
         dataURL,
@@ -89,7 +88,6 @@ class MyPlaylists extends Component {
 
       this.restart()
       this.setState({open:true})
-      // history.push('/')
     }
     handleChange(result){
       this.setState({
@@ -99,7 +97,6 @@ class MyPlaylists extends Component {
       if(this.state.dataURL){
         this.predict()
       }
-      // this.setState({loading:false})
     }
     async auth(){
       try{
@@ -118,7 +115,6 @@ class MyPlaylists extends Component {
       const response = (await axios.post(
         'https://automl.googleapis.com/v1beta1/projects/461664795032/locations/us-central1/models/ICN7851880814785593344:predict',
         {
-  
             payload: {
               "image": {
                 "imageBytes": dataURL
@@ -146,7 +142,6 @@ class MyPlaylists extends Component {
       return acc
     },{duration:0,count:0})
     const {editMode,image,name,label,open, loading} = this.state
-
     return (
     <div style={{display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center', margin:20}}>
       <Snackbar open={open} autoHideDuration={6000} onClose={()=>this.setState({open:false})}>
@@ -155,8 +150,7 @@ class MyPlaylists extends Component {
         </Alert>
       </Snackbar>
       <form>
-        {!image ? 
-        <div style={{display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}>
+        <div style={{display:!image && !loading ? 'flex' : 'none', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}>
           <Button
             variant="contained"
             component="label"
@@ -165,7 +159,7 @@ class MyPlaylists extends Component {
           >
             Select Image
             <input
-            style={{width:loading ? 0 : '100%'}} accept="image/*" ref={ref=>this.el=ref}
+            style={{width:'100%'}} accept="image/*" ref={ref=>this.el=ref}
               type="file"
               style={{ display: "none" }}
             />
@@ -174,8 +168,6 @@ class MyPlaylists extends Component {
           Only JPEG images less than 265KB can be used as playlist covers
         </Typography>
         </div>
-        :
-        ''}
       </form>
       {loading ?
         <CircularProgress/>
@@ -184,10 +176,10 @@ class MyPlaylists extends Component {
                {playlistTracks.length ?
                     <div style={{width:'100%',display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}> 
                         <Card style={{width:'calc(80%)', margin:5,padding:10, display:'flex'}}>
-                            <img style={{border:'1px solid rgba(255,255,255,0.1)', width:'calc(100%/2)', height:'same-as-width', backgroundPosition:'center center', backgroundRepeat:'no-repeat',backgroundAttachment: 'fixed',objectFit:'cover', backgroundSize:'auto'}} src={image}/> 
+                            <img style={{border:'1px solid rgba(255,255,255,0.1)', width:200, height:200, backgroundPosition:'center center', backgroundRepeat:'no-repeat',backgroundAttachment: 'fixed',objectFit:'cover', backgroundSize:'auto'}} src={image}/> 
                             <CardContent style={{width:'calc(100%/2)', alignItems:'center', alignContent:'center'}}>
                             
-                            <div style={{width:'100%', display:'flex',flexDirection:'column'}}>
+                            <div style={{width:'100%', display:'flex',flexDirection:'column', alignContent:'space-around',}}>
                                 <div>
                                 <Typography variant="body1">PLAYLIST</Typography>
                                 </div>

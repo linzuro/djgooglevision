@@ -36,7 +36,7 @@ const PlaylistCard =({track})=>{
                         <img className ='track-card-img' style={{width:100, height:100}} alt="complex" src={track.album.images[0].url} />
                 </Grid>
                 <Grid style={{maxHeight: 200, width:'calc(100%-500px)',margin:10, display:'flex',alignItems:'center'}}>
-                    <Grid item xs={12} spacing={2}>
+                    <Grid item xs={12} >
                         <Typography gutterBottom variant="subtitle1">
                             {track.name}
                         </Typography>
@@ -57,14 +57,6 @@ const PlaylistCard =({track})=>{
                 id="simple-menu"
                 anchorEl={anchorEl}
                 keepMounted
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >

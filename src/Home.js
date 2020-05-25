@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { connect } from 'react-redux';
-import FilePicker from './FilePicker'
 import {Typography} from '@material-ui/core'
 
 const Home =({user})=>{

@@ -3,18 +3,21 @@ import { connect } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import {logOut} from './store.js'
 
-const LogOut =({history,logOut,user,loggedIn})=>{
-    // const token = props.match.params.id
-    // window.localStorage.removeItem('token')
-   console.log(logOut)
+class LogOut extends Component {
+  componentDidMount(){
+    const {history,logOut,user} = this.props
+    window.localStorage.removeItem('token')
     logOut()
-    console.log(user,loggedIn)
-    // history.push('/')
+    console.log(history)
+    history.push('/')
+  }
+  render(){
     return null
+  }
 }
 
-const mapStateToProps = ({user,loggedIn}) => {
-    return {user,loggedIn}
+const mapStateToProps = (props) => {
+    return props
 }
 
 const mapDispatchToProps = (dispatch)=> {

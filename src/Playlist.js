@@ -24,7 +24,7 @@ function Alert(props) {
 }
 
 
-const Playlist=({editMode,image,name,label,playlistTracks})=> {
+const Playlist=({editMode,image,name,playlistTracks})=> {
     const playlistDetails = playlistTracks.reduce((acc,elem)=>{
       acc.duration+=elem.duration_ms
       acc.count+=1
@@ -42,88 +42,49 @@ const Playlist=({editMode,image,name,label,playlistTracks})=> {
       
             <div style={{width:'100%',display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}>
                 {playlistTracks.length ?
-                <div style={{width:'100%',display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}> 
-                    <Card style={{width:'calc(80%)', margin:5,padding:10, display:'flex'}}>
-                        <img style={{border:'1px solid rgba(255,255,255,0.1)', width:'calc(100%/2)', height:'same-as-width', backgroundPosition:'center center', backgroundRepeat:'no-repeat',backgroundAttachment: 'fixed',objectFit:'cover', backgroundSize:'auto'}} src={image}/> 
-                        <CardContent style={{width:'calc(100%/2)', alignItems:'center', alignContent:'center'}}>
-                        
-                        <div style={{width:'100%', display:'flex',flexDirection:'column'}}>
-                            <div>
-                            <Typography variant="body1">PLAYLIST</Typography>
+                    <div style={{width:'100%',display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}> 
+                        <Card style={{width:'calc(80%)', margin:5,padding:10, display:'flex'}}>
+                            <img style={{border:'1px solid rgba(255,255,255,0.1)', width:'calc(100%/2)', height:'same-as-width', backgroundPosition:'center center', backgroundRepeat:'no-repeat',backgroundAttachment: 'fixed',objectFit:'cover', backgroundSize:'auto'}} src={image}/> 
+                            <CardContent style={{width:'calc(100%/2)', alignItems:'center', alignContent:'center'}}>
+                            
+                            <div style={{width:'100%', display:'flex',flexDirection:'column'}}>
+                                <div>
+                                <Typography variant="body1">PLAYLIST</Typography>
+                                </div>
+                                {editMode ? 
+                                <div style={{display:'flex'}}>
+                                <Input 
+                                style={{width:'calc(80%)', fontSize:'2.125rem'}}
+                                label="Playlist Name" 
+                                value={name} 
+                                onChange={(ev)=>this.setState({name:ev.target.value})} 
+                                placeholder={name}/> 
+                                <IconButton onClick={()=>this.setState({editMode:false})}>
+                                <CheckIcon fontSize='small'/>
+                                </IconButton>
+                                </div>
+                            
+                            : 
+                                <div style={{display:'flex'}}>
+                                <Typography variant="h4">{name}</Typography>
+                                <IconButton onClick={()=>this.setState({editMode:true})}>
+                                <EditIcon fontSize='small'/>
+                                </IconButton>
+                                </div>
+                            }
+                                <div>
+                                <Typography variant="body1">{playlistDetails.count} songs</Typography>
+                                </div>
+                                <div>
+                                <Typography variant="body1">{Math.floor(playlistDetails.duration/60000)} minutes</Typography>
+                                </div>
                             </div>
-                            {editMode ? 
-                            <div style={{display:'flex'}}>
-                            <Input 
-                            style={{width:'calc(80%)', fontSize:'2.125rem'}}
-                            label="Playlist Name" 
-                            value={name} 
-                            onChange={(ev)=>this.setState({name:ev.target.value})} 
-                            placeholder={name}/> 
-                            <IconButton onClick={()=>this.setState({editMode:false})}>
-                            <CheckIcon fontSize='small'/>
-                            </IconButton>
-                            </div>
-                        
-                        : 
-                            <div style={{display:'flex'}}>
-                            <Typography variant="h4">{name}</Typography>
-                            <IconButton onClick={()=>this.setState({editMode:true})}>
-                            <EditIcon fontSize='small'/>
-                            </IconButton>
-                            </div>
-                        }
-                            <div>
-                            <Typography variant="body1">{playlistDetails.count} songs</Typography>
-                            </div>
-                            <div>
-                            <Typography variant="body1">{Math.floor(playlistDetails.duration/60000)} minutes</Typography>
-                            </div>
-                        </div>
-                        </CardContent>
-                    </Card>
-                
-                {/* <div style={{width:'100%',display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center'}}> */}
-                {playlistTracks.map((track) => {
-                    return <PlaylistCard track={track}/>
-                })}
-                <Paper style={{
-                    width:'100%', 
-                    backgroundColor:'rgba(0,0,0,.5)', 
-                    position:'fixed',
-                    bottom:0, 
-                    display:'flex', 
-                    justifyContent:'flex-end',
-                    alignItems:'center',
-                    alignContent:'center',
-                    }}>
-                    <Button
-                    style={{margin:10}}
-                    variant="contained"
-                    onClick={this.restart}
-                    startIcon={<ExitToAppIcon />}
-                    >
-                        Start Over
-                    </Button>
-                    <Button
-                        style={{margin:10}}
-                        variant="contained"
-                        startIcon={<RefreshIcon />}
-                        onClick={this.predict}
-                    >
-                        Regenerate
-                    </Button>
-                    <Button
-                        style={{margin:10}}
-                        variant="contained"
-                        color='primary'
-                        onClick={this.submit}
-                        startIcon={<PlaylistAddCheckIcon />}
-                    >
-                        Save Playlist
-                    </Button>
-                </Paper>
-                </div>
-
+                            </CardContent>
+                        </Card>
+                        {playlistTracks.map((track) => {
+                            return <PlaylistCard track={track}/>
+                        })}
+                    </div>
                 :''}
             </div>
         </div>

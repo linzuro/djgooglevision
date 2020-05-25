@@ -11,7 +11,6 @@ const app = express();
 const { User } = db.models
 const jwt = require('jwt-simple')
 const {addUser,getUser, addTrack} = db
-const { setUp } = require('./socketHelper');
 const axios = require('axios')
 const LZString = require('lz-string')
 const client_id = process.env.client_id || require('./client.js').client_id
@@ -26,42 +25,6 @@ const spotifyApi = new SpotifyWebApi({
   redirectUri: redirect_uri
 });
 
-spotifyApi.play=async(track)=>{
-const URL = 'https://api.spotify.com/v1/me/player/play'
-const authKey = spotifyApi.getAccessToken()
-const headers = {headers:{
-    "Accept": 'application/json',
-    "Content-Type": 'application/json',
-    "Authorization": `Bearer ${authKey}`
-}}
-  try{
-    const data = (await axios.put(URL,track,headers))
-    return data
-  }
-  catch(er){
-    console.log(er.message)
-  }
-}
-
-spotifyApi.addToQueue=async(trackId)=>{
-const URL = `https://api.spotify.com/v1/me/player/queue?uri=spotify:track:${trackId}`
-console.log(URL)
-const authKey = spotifyApi.getAccessToken()
-const headers = {headers:{
-    "Accept": 'application/json',
-    "Content-Type": 'application/json',
-    "Authorization": `Bearer ${authKey}`
-   }}  
-
-  try{
-    const data = (await axios.post(URL,null,headers))
-    return data
-  }
-  catch(er){
-    console.log(er.message)
-  }
-}
-
 const getCriteria=(label)=>{
 switch(label){
   case "party": 
@@ -71,12 +34,10 @@ switch(label){
       max_danceability:1,
       min_energy:0.5,
       max_engery:1,
-      mix_valence:0.5,
+      min_valence:0.5,
       max_valence:1,
       min_instrumentalness:0.5,
       max_instrumentalness:1,
-      min_tempo:0.5,
-      max_temp0:1
     }
   case "activity": 
     return {
@@ -85,12 +46,10 @@ switch(label){
       max_danceability:1,
       min_energy:0.5,
       max_engery:1,
-      mix_valence:0,
+      mix_valence:.5,
       max_valence:1,
       min_instrumentalness:0,
-      max_instrumentalness:1,
-      min_tempo:0,
-      max_temp0:1
+      max_instrumentalness:.5,
     }
   case "relax": 
     return  {
@@ -98,27 +57,23 @@ switch(label){
       min_danceability:0,
       max_danceability:0.5,
       min_energy:0,
-      max_engery:1,
+      max_engery:.5,
       mix_valence:0,
       max_valence:1,
       min_instrumentalness:0,
       max_instrumentalness:1,
-      min_tempo:0,
-      max_temp0:1
     }
   case "work": 
     return {
       limit:25,
       min_danceability:0,
-      max_danceability:1,
+      max_danceability:.5,
       min_energy:0,
-      max_engery:1,
+      max_engery:.5,
       mix_valence:0,
       max_valence:1,
       min_instrumentalness:0,
-      max_instrumentalness:1,
-      min_tempo:0,
-      max_temp0:1
+      max_instrumentalness:.5,
     }
   default: 
     return  {
@@ -207,123 +162,29 @@ app.get('/callback',(req,res,next)=>{
         })
 })
 
-app.post('/login',(req,res,next)=>{
+app.post('/login',async(req,res,next)=>{
     const token = req.body.token
 
     //decode user and get auth/refresh token
-    const user = getUser(token)
+    const user = await getUser(token)
 
     //set auth and refresh tokens
-    //console.log(spotifyApi.setAccessToken(user.authKey))
-    //spotifyApi.setAccessToken(user.authKey)
-        // .then(_=>console.log('auth token is good'))
-        // .catch(er=>console.log(`auth error: ${er.message}`));
-    // spotifyApi.refreshAccessToken()
-    //    .then(data=>{
-    //     const authKey = data.body['access_token']
+    try{
+    await spotifyApi.setAccessToken(user.authKey)
+    // const data = await spotifyApi.refreshAccessToken()
+    //const authKey = data.body['access_token']
     //     const refKey = data.body['refresh_token']
     //     spotifyApi.setAccessToken(authKey)
+    }catch(er){
+      console.log(er)
+    }
 
-    //     //insert update user auth and ref key here
-    //     console.log('ref token is good')
-    //   })
-       
-    //    .catch(er=>console.log(console.log(`ref error: ${er.message}`)));
-
-      // spotifyApi.getUser()
-      //   .then(user=>console.log(user))
-      //   .catch(er=>console.log(er.message))
-      //   .then(_=>{
-      //     console.log('user is logged in')
-      //     res.send(token)
-      //   })
-})
-
-
-app.get('/api/albums',(req,res,next)=>{
-    spotifyApi.getMySavedAlbums({limit:30})
-      .then(result=>res.send(result.body.items))
-      .catch(er=>console.log(er));
-})
-
-app.get('/api/nowplaying',(req,res,next)=>{
-    spotifyApi.getMyCurrentPlaybackState({})
-      .then(result=>{res.send(result.body)})
-      .catch(er=>console.log(er));
-})
-app.get('/api/recentlyplayed',(req,res,next)=>{
-    spotifyApi.getMyRecentlyPlayedTracks()
-      .then(result=>res.send(result.body.items))
-      .catch(er=>console.log(er))
-})
-
-app.get('/api/album/:id',(req,res,next)=>{
-    spotifyApi.getAlbumTracks(req.params.id, { limit : 50, offset : 1 })
-      .then(result=>res.send(result.body.items))
-      .catch(er=>console.log(er));
 })
 
 app.get('/api/user',(req,res,next)=>{
     spotifyApi.getMe()
       .then(result=>res.send(result.body))
       .catch(er=>console.log(er))
-})
-
-app.get('/api/playlists',(req,res,next)=>{
-    spotifyApi.getUserPlaylists()
-      .then(result=>res.send(result.body.items))
-      .catch(er=>console.log(er))
-})
-
-app.post('/api/playToAll',(req,res,next)=>{
-  const track = req.body
-  addTrack(track)
-  res.send(track)
-})
-
-app.post('/api/play',async(req,res,next)=>{
-    const device = (await spotifyApi.getMyCurrentPlaybackState({})).body.device.id
-    if(!device){
-      const device = (await spotifyApi.getMyDevices()).body.devices[0].id
-    }
-    //add device if not listed
-    const track = req.body
-    const tracks = await spotifyApi.getAlbumTracks(track.album)
-    const idx = tracks.body.items.findIndex(item=>item.id===track.track)
-    const payload = {
-      "context_uri": `spotify:album:${track.album}`,
-      "offset": {
-        "position": idx
-      },
-      "position_ms": 0
-    }
-    const status= (await spotifyApi.play(payload)).status
-    console.log(status)
-    //if 404 then active device not found
-    //if 204 then success
-    //if 403 then non premium function
-    //console.log(status) 
-    //const ret =await spotifyApi.getMyCurrentPlaybackState({})
-    res.sendStatus(status)
-})
-
-app.post('/api/search',async(req,res,next)=>{
-  const search = req.body.track
-  const data = await spotifyApi.searchTracks(search)
-  res.send(data)
-})
-
-app.post('/api/addTrackToAllQueue',(req,res,next)=>{
-  const track = req.body
-  const response = addTrack(track)
-  res.send(response)
-})
-
-app.post('/api/addTrackToQueue',async(req,res,next)=>{
-  const track = req.body.track
-  const status= (await spotifyApi.addToQueue(track)).status
-  console.log(status)
-  res.send(track)
 })
 
 app.post('/api/makePlaylist',async(req,res,next)=>{
@@ -333,6 +194,7 @@ app.post('/api/makePlaylist',async(req,res,next)=>{
                   .body.items.map(track=>{
                     return track.id
                   })
+
     const criteria = getCriteria(label)
     const recommended = await spotifyApi.getRecommendations({...criteria,seed_tracks:tracks})
     res.send(recommended.body)
@@ -411,5 +273,4 @@ app.get('/auth/service/',(req,res,next)=>{
 db.sync()
   .then(()=> {
     const server=app.listen(port, ()=> console.log(`listening on port ${port}`));
-    setUp(server)
   });

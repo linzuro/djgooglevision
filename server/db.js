@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const conn = new Sequelize(process.env.DATABASE_URL || "postgres://localhost/hangthedj");
 const jwt = require('jwt-simple')
-const { socketServer } = require('./socketHelper');
 
 
 const User = conn.define('user', {
@@ -47,16 +46,7 @@ const Track = conn.define('track', {
     album:{
         type:Sequelize.STRING
     }
-  },{
-    hooks: {
-      afterCreate: function(message){
-        if(socketServer()){
-          socketServer().emit(message.action, message);
-          //const sockets = Object.values(socketServer().clients().connected);
-        }
-      }
-    }
-});
+  });
 
 const sync = async () => {
     await conn.sync({ force: true })
