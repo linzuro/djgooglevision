@@ -2,7 +2,7 @@ import axios from 'axios';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import thunks from 'redux-thunk';
 import {createLogger} from 'redux-logger';
-import {useHistory} from 'react-router-dom'
+import history from './history'
 
 //constants
 
@@ -76,6 +76,7 @@ const logOut= ()=>{
   return async(dispatch)=>{
     const data = (await axios.get(`/logout`))
     dispatch(_loadUser({}))
+    history.push('/')
 }
 }
 

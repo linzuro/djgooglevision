@@ -8,8 +8,6 @@ class LogOut extends Component {
     const {history,logOut,user} = this.props
     window.localStorage.removeItem('token')
     logOut()
-    console.log(history)
-    history.push('/')
   }
   render(){
     return null

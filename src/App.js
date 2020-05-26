@@ -40,11 +40,11 @@ class App extends React.Component {
         return (
           <HashRouter>
             <Route component={Header} />
-            {/* <Route component={Nav} /> */}
-            <Route exact path='/' component={MyPlaylists} />
+            <Route component={Nav} />
+            <Route exact path='/' component={Home} />
             <Route exact path='/token/:id' component={LogIn} />
-            {/* <Route exact path='/logout' component={LogOut} />
-            <Route exact path='/makeplaylists' component={MyPlaylists} /> */}
+            <Route exact path='/logout' component={LogOut} />
+            <Route exact path='/makeplaylists' component={MyPlaylists} />
           </HashRouter>
         )
        }else{
