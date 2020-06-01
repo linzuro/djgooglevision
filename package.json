@@ -26,6 +26,7 @@
     "expo": "^37.0.12",
     "express": "^4.17.1",
     "faker": "^4.1.0",
+    "google-auth-library": "^6.0.0",
     "gtoken": "^5.0.1",
     "jwt-simple": "^0.5.6",
     "lz-string": "^1.4.4",

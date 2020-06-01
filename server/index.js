@@ -241,13 +241,35 @@ app.post('/api/updatePlaylistImage',async(req,res,next)=>{
 })
 app.get('/auth/service/',(req,res,next)=>{
   const { GoogleToken } = require('gtoken');
+  // const GoogleAuth = require('google-auth-library');
+  // const authFactory = new GoogleAuth();
+  // const jwtClient = new authFactory.JWT(
+  //     client_email, // defined in Heroku
+  //     null,
+  //     private_key, // defined in Heroku
+  //     ['https://www.googleapis.com/auth/cloud-platform']
+  // );
+
+  // jwtClient.authorize(() => console.log(jwtClient));
   // if(process.env.key && process.env.email){
     console.log(client_email)
     console.log(private_key)
+    // const gtoken = new GoogleToken({
+    //   email:client_email,
+    //   scope: ['https://www.googleapis.com/auth/cloud-platform'],
+    //   key:private_key});
+    // gtoken.getToken((err, tokens) => {
+    //   if (err) {
+    //     console.log(err);
+    //     return;
+    //   }
+    //   res.send(tokens.access_token)
+    // })
+  // }else{
     const gtoken = new GoogleToken({
-      email:client_email,
-      scope: ['https://www.googleapis.com/auth/cloud-platform'],
-      key:private_key});
+      keyFile: './google-credentials.json',
+      scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
+    });
     gtoken.getToken((err, tokens) => {
       if (err) {
         console.log(err);
@@ -255,18 +277,6 @@ app.get('/auth/service/',(req,res,next)=>{
       }
       res.send(tokens.access_token)
     })
-  // }else{
-  //   const gtoken = new GoogleToken({
-  //     keyFile: './googleKey.json',
-  //     scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
-  //   });
-  //   gtoken.getToken((err, tokens) => {
-  //     if (err) {
-  //       console.log(err);
-  //       return;
-  //     }
-  //     res.send(tokens.access_token)
-  //   })
   // }
   
 })
