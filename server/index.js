@@ -19,6 +19,7 @@ const redirect_uri = process.env.redirect_uri || require('./client.js').redirect
 const private_key= process.env.private_key || require('./googleKey.json').private_key
 const client_email= process.env.client_email || require('./googleKey.json').client_email
 
+
 const port = process.env.PORT || 8888;
 
 const spotifyApi = new SpotifyWebApi({
@@ -241,6 +242,8 @@ app.post('/api/updatePlaylistImage',async(req,res,next)=>{
 app.get('/auth/service/',(req,res,next)=>{
   const { GoogleToken } = require('gtoken');
   // if(process.env.key && process.env.email){
+    console.log(client_email)
+    console.log(private_key)
     const gtoken = new GoogleToken({
       email:client_email,
       scope: ['https://www.googleapis.com/auth/cloud-platform'],
