@@ -115,7 +115,7 @@ class MyPlaylists extends Component {
       if(!loading) this.setState({loading:true})
       const access_token = await this.auth()
       const response = (await axios.post(
-        'https://automl.googleapis.com/v1beta1/projects/461664795032/locations/us-central1/models/ICN7851880814785593344:predict',
+        'https://automl.googleapis.com/v1beta1/projects/32318191032/locations/us-central1/models/ICN4114603408579624960:predict',
         {
             payload: {
               "image": {
@@ -127,7 +127,7 @@ class MyPlaylists extends Component {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${access_token}`
         }}
-        ))
+        )).data
         console.log(response.payload[0].displayName)
         console.log(response.payload[0])
         this.setState({label:response.payload[0].displayName})

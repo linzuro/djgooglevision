@@ -224,8 +224,6 @@ app.post('/api/addPlaylistTracks',async(req,res,next)=>{
 })
 app.post('/api/updatePlaylistImage',async(req,res,next)=>{
   const {playlistId,dataURL} = req.body
-  // const decompressed = LZString.decompressFromEncodedURIComponent(dataURL)
-  // const compressed = await LZString.compressToBase64(dataURL)
   const URL = `https://api.spotify.com/v1/playlists/${playlistId}/images`
   const authKey = spotifyApi.getAccessToken()
   const headers = {headers:{
@@ -245,7 +243,7 @@ app.get('/auth/service/',(req,res,next)=>{
   // if(process.env.key && process.env.email){
     const gtoken = new GoogleToken({
       email:client_email,
-      scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
+      scope: ['https://www.googleapis.com/auth/cloud-platform'],
       key:private_key});
     gtoken.getToken((err, tokens) => {
       if (err) {
