@@ -7,8 +7,7 @@
     "start": "node server/index.js",
     "build": "webpack",
     "build:dev": "npm run build -- --watch --mode=development",
-    "start:dev": "nodemon server --ignore dist/ --ignore src/ & npm run build:dev",
-    "web": "node server/index.js",
+    "start:dev": "nodemon server --ignore dist/ --ignore src/ & npm run build:dev"
   },
   "keywords": [],
   "author": "",
