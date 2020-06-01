@@ -267,7 +267,7 @@ app.get('/auth/service/',(req,res,next)=>{
     // })
   // }else{
     const gtoken = new GoogleToken({
-      keyFile: './google-credentials.json',
+      keyFile: 'google-credentials.json',
       scope: ['https://www.googleapis.com/auth/cloud-platform'] // or space-delimited string of scopes
     });
     gtoken.getToken((err, tokens) => {
