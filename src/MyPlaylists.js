@@ -34,7 +34,9 @@ class MyPlaylists extends Component {
         name:'My Playlist',
         editMode:false,
         loading:true,
-        open:false
+        open:false,
+        message:'',
+        severity:''
       }
       this.predict = this.predict.bind(this)
       this.auth = this.auth.bind(this)
@@ -87,7 +89,7 @@ class MyPlaylists extends Component {
       })
 
       this.restart()
-      this.setState({open:true})
+      this.setState({open:true, message:'Playlist created!',severity:'success'})
     }
     handleChange(result){
       this.setState({
@@ -125,13 +127,22 @@ class MyPlaylists extends Component {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${access_token}`
         }}
-        )).data
+        ))
         console.log(response.payload[0].displayName)
+        console.log(response.payload[0])
         this.setState({label:response.payload[0].displayName})
         this.props.loadPlaylistTracks(this.state.label)
       }
       catch(er){
         console.log(er)
+        // console.log(response)
+        this.setState({
+          loading:false,
+          message:'An error occured. Please try again later',
+          open:true,
+          severity:'error',
+        })
+        this.restart()
       }
     }
     render() {
@@ -141,12 +152,12 @@ class MyPlaylists extends Component {
       acc.count+=1
       return acc
     },{duration:0,count:0})
-    const {editMode,image,name,label,open, loading} = this.state
+    const {editMode,image,name,label,open, loading,message,severity} = this.state
     return (
     <div style={{display:'flex', flexDirection:'column',justifyContent:'center', alignItems:'center', alignContent:'center', margin:20}}>
       <Snackbar open={open} autoHideDuration={6000} onClose={()=>this.setState({open:false})}>
-        <Alert onClose={()=>this.setState({open:false})} severity="success">
-          Playlist created!
+        <Alert onClose={()=>this.setState({open:false})} severity={severity}>
+         {message}
         </Alert>
       </Snackbar>
       <form>

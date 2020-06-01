@@ -1,3 +1,5 @@
 node_modules
-googleKey.json
+server/googleKey.json
 server/client.js
+client.js
+googleKey.json

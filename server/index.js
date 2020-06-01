@@ -16,6 +16,8 @@ const LZString = require('lz-string')
 const client_id = process.env.client_id || require('./client.js').client_id
 const client_secret = process.env.client_secret || require('./client.js').client_secret
 const redirect_uri = process.env.redirect_uri || require('./client.js').redirect_uri
+const private_key= process.env.private_key || require('./googleKey.json').private_key
+const client_email= process.env.client_email || require('./googleKey.json').client_email
 
 const port = process.env.PORT || 8888;
 
@@ -242,10 +244,9 @@ app.get('/auth/service/',(req,res,next)=>{
   const { GoogleToken } = require('gtoken');
   // if(process.env.key && process.env.email){
     const gtoken = new GoogleToken({
-      email: 'spotify-playlist@charged-camera-277800.iam.gserviceaccount.com',
+      email:client_email,
       scope: ['https://www.googleapis.com/auth/cloud-platform'], // or space-delimited string of scopes
-      key: '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD86XOjdrrymnpF\nSDQ6fnuMnVBcTEc8DBfgqXfALLUKsR+isV9jNZ+f4h/RKDccBw28ZWr2jEmWlZtb\naw3Ux0k9bdFKcXEiQwlB+1JcimBcwz7yNNnheqGbEL09GjuHL5+EEUfUFmgt4YrN\nvMdulk6KbJWBtkGReau6xBQSKuxEYlzTVBhGI9MEPRlMabxtkzRu3faJv7Uc84FD\n1/RyLZzq0NFC7LNICyb5aifAs2jzSo1fqpTrje6hL9+QyySwgpygzuSd0sK3zUG1\nD3H4F5FAved1oHv7fSUZfj/ck9HnSzoH4Vir5PmUEqcZ/Ec0IUeRyUWVshoaTXxh\nnW04mkzNAgMBAAECggEANEF0EDFG/TtnygraJ7/cfTg/02I7Ua/Z+yRoxr82BOiF\n9dKaN+Brg9hv5IJfqJ3Ye7WkvR5NUhzFRcU/zVgDzPp0xOHdk0uwjP6FjPNWZ7Q7\nvEWpQwpYe7agsxBJfmwblGkRo0Oh8ODqEgpQVowd3EIFPhDPSWSPU/6RexN9T79t\n8hgFgCnG6+wWkUiTo1Vcn5jPfl5Dkkx68IlZkykLRiCrz3l2ekX9psimtpNFO5cT\ne92g0v/I6g1DSE3maIG9lRBmn6D9uS09jBWPJXKnusngzZkmCyMBs1vI7L01wJ5X\nOHlyDjeNKKULX8IBkoHEOVaFg03SUvu0pRADoziEAQKBgQD/m0dLwWymgEs0ek54\nXHMN4UVXAxZlQvTzciPzxnmUQ3j5s3twRN5v4iiDRtGBM/VqO2mx2NNIFrEEBI+z\nHJ257IqPvwAHp0AfUeg5dL29V29fLOTMy8EGznkgsnY336lHCZ2gfrIqupN/Z4LP\nl/H/AV6bgq0ZNWuBD26ZptJZzQKBgQD9TRyEXxG/ro7M9HSFPGtWuagklHK2vmkB\nsOCsoDwbkywFKGIU3nOElFlD2HeaXp/2ylFSYI09tnxC3/FIWx4vxFFriZ+HIMEJ\nB2I4eaMfCJpVGQkNdokANRlrwoeTrkiClZdAxoemJGpgpPf+7SHAjj9RFtUHOyrG\nbX0tO+i/AQKBgQCcg7aaeqxPIAvs7F+Ub/e7rg9Jgoh6JQ/c6i19njDgSpiPPgn9\n6w3RsMhh6kFrPieujwbfcgeeAtcNwMVFReaG7ILEFo6sIQuwofTzCbsNb7awrsrD\nZJij1FZzYRPmjrwW1ZqBplLuuySKRRXijAYQwgPucYwQ/ZcAhjSRPYdcmQKBgHub\nXpgmAHZGi37up9HAyyyWCrxXCKeuwXVGyEzVIJ/gMLIPo9VFPJ/s+KaIAs188Ziv\n4AFQBnygCYFk4MyLUm7C4WyVyxhY3no2dTLUAMsLGqz+O5GrT22fe9k/I4Pon4/B\nyf6dIuLrkFG7Dx4Cv97ES5eZibkuoVAVa+lf+9MBAoGAJpV4FYhwn8RdEPGo9UIZ\nS+qSdk/QuGjes90oqs6plaE+jUteJOU5jah7XPDefoRAUFye6ReBq9zObJszTpca\nu2cXv4qLKwbZgsQvk+rtMwLbuQ91z7VWCft5JzybXGbcWJVIt7BP+7vAwqYFVGvz\n6Dd5vcYsRbM9NvuX5uW1Pw8=\n-----END PRIVATE KEY-----\n'
-    });
+      key:private_key});
     gtoken.getToken((err, tokens) => {
       if (err) {
         console.log(err);
