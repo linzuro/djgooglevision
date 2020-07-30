@@ -115,7 +115,7 @@ class MyPlaylists extends Component {
       if(!loading) this.setState({loading:true})
       const access_token = await this.auth()
       const response = (await axios.post(
-        'https://automl.googleapis.com/v1beta1/projects/627841888264/locations/us-central1/models/ICN7628009252254121984:predict',
+        'https://automl.googleapis.com/v1beta1/projects/264619210771/locations/us-central1/models/ICN4585686966476996608:predict',
         {
             payload: {
               "image": {
